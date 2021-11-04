@@ -6,7 +6,7 @@
 /*   By: abrun <abrun@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 12:18:58 by abrun             #+#    #+#             */
-/*   Updated: 2021/11/03 18:04:55 by abrun            ###   ########.fr       */
+/*   Updated: 2021/11/04 11:55:34 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ char	*ft_strjoin(char const *s1, const char *s2)
 size_t	ft_strlen(const char *s)
 {
 	size_t	len;
+
 	if (!s)
 		return (0);
 	len = 0;

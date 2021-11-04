@@ -6,7 +6,7 @@
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 11:58:08 by abrun             #+#    #+#             */
-/*   Updated: 2021/11/03 18:18:38 by abrun            ###   ########.fr       */
+/*   Updated: 2021/11/04 13:18:12 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,19 @@ typedef struct s_philo
 	struct timeval	curr_t;
 	t_time			start;
 	char			*name;
+	struct s_philo	*next;
+	pthread_mutex_t	mex;
+	int				think;
+	int				dead;
 }			t_philo;
+
+t_philo		*init_philo(int n_ph, char **av, struct timeval time);
 
 t_philo		fill_philo_parameters(char **av);
 
 void		*creation(void *ptr);
+
+int			is_philo_dead(t_philo *philo);
 
 int			ft_isdigit(int c);
 
@@ -56,9 +64,9 @@ t_philo		fill_philo_parameters(char **av);
 
 long int	ft_diff_time(struct timeval t0, struct timeval t1);
 
-void		do_eat(struct timeval t0, struct timeval t1, t_philo *philo);
+void		do_eat(struct timeval t0, t_philo *philo);
 
-void		do_sleep(struct timeval t0, struct timeval t1, t_philo *philo);
+void		do_sleep(struct timeval t0, t_philo *philo);
 
 void		*creation(void *ptr);
 
@@ -71,4 +79,6 @@ char		*ft_itoa(int n);
 int			ft_n_digit(int n);
 
 void		ft_getnbr(char *itoa, unsigned int n, int counter);
+
+void		free_params(t_philo *philo);
 #endif

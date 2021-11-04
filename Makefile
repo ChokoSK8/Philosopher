@@ -1,6 +1,6 @@
 NAME	= philo
 
-SRCS	= main.c ft_isdigit.c ft_atoi.c make_thread.c make_tasks.c tools.c ft_itoa.c ft_strjoin.c
+SRCS	= main.c ft_isdigit.c ft_atoi.c make_thread.c make_tasks.c tools.c ft_itoa.c ft_strjoin.c init_philo.c free_params.c
 
 OBJS	= $(SRCS:.c=.o)
 
