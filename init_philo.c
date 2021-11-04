@@ -6,39 +6,55 @@
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 11:47:16 by abrun             #+#    #+#             */
-/*   Updated: 2021/11/04 13:18:08 by abrun            ###   ########.fr       */
+/*   Updated: 2021/11/04 18:46:46 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-t_philo	*init_philo(int n_ph, char **av, struct timeval time)
+t_philo	*init_philo(int n_ph, char **av)
 {
 	int		c;
 	t_philo	*philo;
+	t_param	*param;
 
 	philo = malloc(sizeof(t_philo) * n_ph);
 	if (!philo)
 		return (0);
-	c = 0;
-	while (c < n_ph)
+	param = init_param();
+	if (!param)
+		return (0);
+	c = -1;
+	while (++c < n_ph)
 	{
 		philo[c] = fill_philo_parameters(av);
-		philo[c].curr_t = time;
 		philo[c].name = ft_strjoin("philo", ft_itoa(c + 1));
 		if (!philo[c].name)
 		{
 			free(philo);
 			return (0);
 		}
-		pthread_mutex_init(&philo[c].mex, NULL);
+		pthread_mutex_init(&philo[c].fork, NULL);
+		philo[c].g = param;
 		if (c < n_ph - 1)
 			philo[c].next = &philo[c + 1];
 		else
 			philo[c].next = &philo[0];
-		c++;
 	}
 	return (philo);
+}
+
+t_param	*init_param(void)
+{
+	t_param	*param;
+
+	param = malloc(sizeof(t_param));
+	if (!param)
+		return (0);
+	gettimeofday(&param->start, NULL);
+	param->dead = 0;
+	pthread_mutex_init(&param->print, NULL);
+	return (param);
 }
 
 t_philo	fill_philo_parameters(char **av)
@@ -54,6 +70,6 @@ t_philo	fill_philo_parameters(char **av)
 	philo.die.t = ft_atoi(av[2]);
 	philo.die.c = ft_atoi(av[2]);
 	philo.think = 0;
-	philo.dead = 0;
+	philo.equip = 0;
 	return (philo);
 }
