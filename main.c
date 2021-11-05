@@ -6,7 +6,7 @@
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 11:40:01 by abrun             #+#    #+#             */
-/*   Updated: 2021/11/04 17:37:21 by abrun            ###   ########.fr       */
+/*   Updated: 2021/11/05 11:55:49 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	main(int ac, char **av)
 	if (ac < 5)
 		return (1);
 	n_ph = ft_atoi(av[1]);
-	philo = init_philo(n_ph, av);
+	philo = init_philo(n_ph, ac, av);
 	if (!philo)
 		return (2);
 	c = -1;
@@ -29,9 +29,13 @@ int	main(int ac, char **av)
 	{
 		if (pthread_create(&philo[c].thread, NULL, creation, (void *)&philo[c]))
 			return (4);
-		if (pthread_detach(philo[c].thread))
+	}
+	c = -1;
+	while (++c < n_ph)
+	{
+		if (pthread_join(philo[c].thread, NULL))
 			return (5);
 	}
-	pthread_exit(NULL);
+	free_params(philo);
 	return (0);
 }

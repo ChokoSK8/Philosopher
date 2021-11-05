@@ -6,7 +6,7 @@
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 17:31:16 by abrun             #+#    #+#             */
-/*   Updated: 2021/11/04 18:44:45 by abrun            ###   ########.fr       */
+/*   Updated: 2021/11/05 11:44:13 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,10 @@ void	do_eat(struct timeval t0, t_philo *philo)
 		philo->sleep.c = philo->sleep.t;
 		philo->sleep.b = 0;
 		philo->equip = 0;
+		philo->meal += 1;
 		usleep(100);
+		if (philo->meal == philo->g->n_meal && philo->g->meal)
+			philo->g->meal--;
 		pthread_mutex_unlock(&philo->fork);
 		pthread_mutex_unlock(&philo->next->fork);
 	}
@@ -62,21 +65,23 @@ void	do_sleep(struct timeval t0, t_philo *philo)
 
 void	do_think(t_philo *philo)
 {
-	if (!philo->think)
+	usleep(100);
+	if (philo->equip != 1 && !philo->next->equip && !philo->prev->equip)
+	{
+		philo->equip = 1;
+		pthread_mutex_lock(&philo->fork);
+		print_msg(philo, "has taken a fork");
+	}
+	else if (philo->equip != 2 && philo->equip != 3
+		&& !philo->next->equip && !philo->prev->equip)
+	{
+		philo->equip += 2;
+		pthread_mutex_lock(&philo->next->fork);
+		print_msg(philo, "has taken a fork");
+	}
+	else if (!philo->think)
 	{
 		print_msg(philo, "is thinking");
 		philo->think = 1;
-	}
-	if (philo->equip != 1 && !philo->next->equip)
-	{
-		pthread_mutex_lock(&philo->fork);
-		print_msg(philo, "has taken a fork");
-		philo->equip = 1;
-	}
-	if (philo->equip != 2 && philo->equip != 3 && !philo->next->equip)
-	{
-		pthread_mutex_lock(&philo->next->fork);
-		print_msg(philo, "has taken a fork");
-		philo->equip += 2;
 	}
 }

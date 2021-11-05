@@ -6,7 +6,7 @@
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 11:58:08 by abrun             #+#    #+#             */
-/*   Updated: 2021/11/04 18:41:57 by abrun            ###   ########.fr       */
+/*   Updated: 2021/11/05 12:00:59 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ typedef struct s_param
 	struct timeval	start;
 	int				dead;
 	pthread_mutex_t	print;
+	int				meal;
+	int				n_meal;
 }			t_param;
 
 typedef struct s_philo
@@ -48,15 +50,17 @@ typedef struct s_philo
 	t_time			start;
 	char			*name;
 	struct s_philo	*next;
+	struct s_philo	*prev;
 	pthread_mutex_t	fork;
 	int				think;
 	int				equip;
+	int				meal;
 	t_param			*g;
 }			t_philo;
 
-t_philo		*init_philo(int n_ph, char **av);
+t_philo		*init_philo(int n_ph, int ac, char **av);
 
-t_param		*init_param(void);
+t_param		*init_param(int ac, char **av);
 
 t_philo		fill_philo_parameters(char **av);
 
@@ -93,4 +97,6 @@ int			ft_n_digit(int n);
 void		ft_getnbr(char *itoa, unsigned int n, int counter);
 
 void		free_params(t_philo *philo);
+
+void		free_init(t_philo *philo, int c);
 #endif
