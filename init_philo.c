@@ -6,7 +6,7 @@
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 11:47:16 by abrun             #+#    #+#             */
-/*   Updated: 2021/11/05 12:08:37 by abrun            ###   ########.fr       */
+/*   Updated: 2021/11/06 12:25:22 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,10 @@ t_param	*init_param(int ac, char **av)
 		param->meal = ft_atoi(av[1]);
 	else
 		param->meal = -1;
-	param->n_meal = ft_atoi(av[5]);
+	if (ac == 6)
+		param->n_meal = ft_atoi(av[5]);
+	else
+		param->n_meal = -1;
 	return (param);
 }
 

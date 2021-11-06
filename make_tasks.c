@@ -6,7 +6,7 @@
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 17:31:16 by abrun             #+#    #+#             */
-/*   Updated: 2021/11/05 11:44:13 by abrun            ###   ########.fr       */
+/*   Updated: 2021/11/06 12:13:26 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	do_eat(struct timeval t0, t_philo *philo)
 		philo->sleep.b = 0;
 		philo->equip = 0;
 		philo->meal += 1;
-		usleep(100);
+		usleep(300);
 		if (philo->meal == philo->g->n_meal && philo->g->meal)
 			philo->g->meal--;
 		pthread_mutex_unlock(&philo->fork);
@@ -65,7 +65,7 @@ void	do_sleep(struct timeval t0, t_philo *philo)
 
 void	do_think(t_philo *philo)
 {
-	usleep(100);
+	usleep(1000);
 	if (philo->equip != 1 && !philo->next->equip && !philo->prev->equip)
 	{
 		philo->equip = 1;

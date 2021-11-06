@@ -6,7 +6,7 @@
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 17:30:06 by abrun             #+#    #+#             */
-/*   Updated: 2021/11/05 11:56:11 by abrun            ###   ########.fr       */
+/*   Updated: 2021/11/06 12:06:53 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	*creation(void *ptr)
 	struct timeval	t1;
 
 	philo = (t_philo *)ptr;
-	usleep(50000);
+	usleep(300);
 	gettimeofday(&t0, NULL);
 	philo->sleep.c = 0;
 	while (philo->die.c > 0 && !philo->g->dead && philo->g->meal)
@@ -33,7 +33,7 @@ void	*creation(void *ptr)
 		if (philo->sleep.c <= 0 && !philo->eat.b
 			&& philo->die.c > 0)
 			do_think(philo);
-		usleep(1000);
+		usleep(300);
 		t0 = t1;
 	}
 	if (philo->die.c <= 0 && !philo->g->dead)
@@ -41,6 +41,6 @@ void	*creation(void *ptr)
 		philo->g->dead = 1;
 		print_msg(philo, "died");
 	}
-	usleep(1000);
+	usleep(100);
 	return (NULL);
 }
