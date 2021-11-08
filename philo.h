@@ -6,7 +6,7 @@
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 11:58:08 by abrun             #+#    #+#             */
-/*   Updated: 2021/11/05 12:00:59 by abrun            ###   ########.fr       */
+/*   Updated: 2021/11/08 14:16:49 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,6 @@
 # include <unistd.h>
 # include <pthread.h>
 # include <sys/time.h>
-
-typedef struct s_time
-{
-	long int	sec;
-	long int	usec;
-}			t_time;
 
 typedef struct s_task
 {
@@ -39,6 +33,9 @@ typedef struct s_param
 	pthread_mutex_t	print;
 	int				meal;
 	int				n_meal;
+	int				all_m;
+	int				n_ph;
+	pthread_mutex_t	var;
 }			t_param;
 
 typedef struct s_philo
@@ -47,7 +44,6 @@ typedef struct s_philo
 	t_task			sleep;
 	t_task			die;
 	t_task			eat;
-	t_time			start;
 	char			*name;
 	struct s_philo	*next;
 	struct s_philo	*prev;
@@ -60,9 +56,11 @@ typedef struct s_philo
 
 t_philo		*init_philo(int n_ph, int ac, char **av);
 
-t_param		*init_param(int ac, char **av);
+t_param		*init_param(int ac, char **av, int n_ph);
 
-t_philo		fill_philo_parameters(char **av);
+t_philo		fill_philo_parameters(char **av, int c, t_param *param);
+
+t_philo		*assign_prev_next(t_philo *philo, int c, int n_ph);
 
 void		*creation(void *ptr);
 
@@ -70,13 +68,15 @@ int			ft_isdigit(int c);
 
 int			ft_atoi(const char *str);
 
-t_philo		fill_philo_parameters(char **av);
-
 long int	ft_diff_time(struct timeval t0, struct timeval t1);
 
 void		print_msg(t_philo *philo, char *msg);
 
+int			can_he_eats(int ph_meal, t_param *param);
+
 void		do_eat(struct timeval t0, t_philo *philo);
+
+void		set_after_eat(t_philo *philo);
 
 void		do_sleep(struct timeval t0, t_philo *philo);
 

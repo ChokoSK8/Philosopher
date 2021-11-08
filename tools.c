@@ -6,7 +6,7 @@
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 17:31:39 by abrun             #+#    #+#             */
-/*   Updated: 2021/11/05 11:50:31 by abrun            ###   ########.fr       */
+/*   Updated: 2021/11/08 14:11:04 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,4 +30,17 @@ void	print_msg(t_philo *philo, char *msg)
 	printf("\n            %ld %s %s\n",
 		ft_diff_time(philo->g->start, t1), philo->name, msg);
 	pthread_mutex_unlock(&philo->g->print);
+}
+
+int	can_he_eats(int ph_meal, t_param *param)
+{
+	double	ret;
+
+	usleep(100);
+	pthread_mutex_lock(&param->var);
+	ret = (double)(param->all_m) / (double)param->n_ph;
+	pthread_mutex_unlock(&param->var);
+	if ((double)ph_meal <= ret)
+		return (1);
+	return (0);
 }

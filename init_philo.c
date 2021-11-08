@@ -6,7 +6,7 @@
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 11:47:16 by abrun             #+#    #+#             */
-/*   Updated: 2021/11/06 12:25:22 by abrun            ###   ########.fr       */
+/*   Updated: 2021/11/08 14:26:56 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,46 +17,30 @@ t_philo	*init_philo(int n_ph, int ac, char **av)
 	int		c;
 	t_philo	*philo;
 	t_param	*param;
-	char	*num;
 
 	philo = malloc(sizeof(t_philo) * n_ph);
 	if (!philo)
 		return (0);
-	param = init_param(ac, av);
+	param = init_param(ac, av, n_ph);
 	if (!param)
 		return (0);
 	c = -1;
 	while (++c < n_ph)
 	{
-		philo[c] = fill_philo_parameters(av);
-		philo[c].meal = 0;
-		num = ft_itoa(c + 1);
-		philo[c].name = ft_strjoin("philo", num);
-		free(num);
-		philo[c].g = param;
-		pthread_mutex_init(&philo[c].fork, NULL);
+		philo[c] = fill_philo_parameters(av, c, param);
 		if (!philo[c].name)
 		{
 			free_init(philo, c);
 			return (0);
 		}
-		if (c < n_ph - 1)
-			philo[c].next = &philo[c + 1];
-		else
-			philo[c].next = &philo[0];
 	}
 	c = -1;
 	while (++c < n_ph)
-	{
-		if (c != 0)
-			philo[c].prev = &philo[c - 1];
-		else
-			philo[c].prev = &philo[n_ph - 1];
-	}
+		philo = assign_prev_next(philo, c, n_ph);
 	return (philo);
 }
 
-t_param	*init_param(int ac, char **av)
+t_param	*init_param(int ac, char **av, int n_ph)
 {
 	t_param	*param;
 
@@ -66,20 +50,24 @@ t_param	*init_param(int ac, char **av)
 	gettimeofday(&param->start, NULL);
 	param->dead = 0;
 	pthread_mutex_init(&param->print, NULL);
+	pthread_mutex_init(&param->var, NULL);
 	if (ac == 6)
-		param->meal = ft_atoi(av[1]);
+		param->meal = n_ph;
 	else
 		param->meal = -1;
 	if (ac == 6)
 		param->n_meal = ft_atoi(av[5]);
 	else
 		param->n_meal = -1;
+	param->n_ph = n_ph;
+	param->all_m = 0;
 	return (param);
 }
 
-t_philo	fill_philo_parameters(char **av)
+t_philo	fill_philo_parameters(char **av, int c, t_param *param)
 {
 	t_philo	philo;
+	char	*num;
 
 	philo.sleep.t = ft_atoi(av[4]);
 	philo.sleep.c = ft_atoi(av[4]);
@@ -91,5 +79,32 @@ t_philo	fill_philo_parameters(char **av)
 	philo.die.c = ft_atoi(av[2]);
 	philo.think = 0;
 	philo.equip = 0;
+	philo.meal = 0;
+	num = ft_itoa(c + 1);
+	philo.name = ft_strjoin("philo", num);
+	free(num);
+	philo.g = param;
+	pthread_mutex_init(&philo.fork, NULL);
+	return (philo);
+}
+
+t_philo	*assign_prev_next(t_philo *philo, int c, int n_ph)
+{
+	if (n_ph > 1)
+	{
+		if (c < n_ph - 1)
+			philo[c].next = &philo[c + 1];
+		else
+			philo[c].next = &philo[0];
+		if (c != 0)
+			philo[c].prev = &philo[c - 1];
+		else
+			philo[c].prev = &philo[n_ph - 1];
+	}
+	else
+	{
+		philo[c].prev = &philo[c];
+		philo[c].next = &philo[c];
+	}
 	return (philo);
 }
