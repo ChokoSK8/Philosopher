@@ -6,7 +6,7 @@
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 11:58:08 by abrun             #+#    #+#             */
-/*   Updated: 2021/11/08 14:16:49 by abrun            ###   ########.fr       */
+/*   Updated: 2021/11/10 13:51:47 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,14 @@ typedef struct s_param
 {
 	struct timeval	start;
 	int				dead;
-	pthread_mutex_t	print;
 	int				meal;
 	int				n_meal;
 	int				all_m;
 	int				n_ph;
+	pthread_mutex_t	print;
 	pthread_mutex_t	var;
+	pthread_mutex_t	think;
+	pthread_mutex_t	end;
 }			t_param;
 
 typedef struct s_philo

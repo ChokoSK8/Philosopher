@@ -6,7 +6,7 @@
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 11:47:16 by abrun             #+#    #+#             */
-/*   Updated: 2021/11/08 14:26:56 by abrun            ###   ########.fr       */
+/*   Updated: 2021/11/10 13:51:35 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ t_param	*init_param(int ac, char **av, int n_ph)
 	param->dead = 0;
 	pthread_mutex_init(&param->print, NULL);
 	pthread_mutex_init(&param->var, NULL);
+	pthread_mutex_init(&param->think, NULL);
+	pthread_mutex_init(&param->end, NULL);
 	if (ac == 6)
 		param->meal = n_ph;
 	else

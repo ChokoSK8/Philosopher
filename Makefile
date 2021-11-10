@@ -8,7 +8,7 @@ RM		= rm -rf
 
 INC		= -I includes/
 
-FLAGS	= -Wall -Werror -Wextra -pthread
+FLAGS	= -Wall -Werror -Wextra -g3 -g -pthread
 
 %.o: %.c
 	gcc $(FLAGS) $(INC) -o $@ -c $?
