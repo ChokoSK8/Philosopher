@@ -6,7 +6,7 @@
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 11:58:08 by abrun             #+#    #+#             */
-/*   Updated: 2021/11/10 13:51:47 by abrun            ###   ########.fr       */
+/*   Updated: 2021/11/10 15:20:11 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ t_philo		*assign_prev_next(t_philo *philo, int c, int n_ph);
 
 void		*creation(void *ptr);
 
+void		*exit_thread(t_philo *philo);
+
 int			ft_isdigit(int c);
 
 int			ft_atoi(const char *str);
@@ -78,13 +80,15 @@ int			can_he_eats(int ph_meal, t_param *param);
 
 void		do_eat(struct timeval t0, t_philo *philo);
 
-void		set_after_eat(t_philo *philo);
-
 void		do_sleep(struct timeval t0, t_philo *philo);
 
 void		do_think(t_philo *philo);
 
-int			equip_fork(t_philo *philo, int ret);
+int			do_death(t_philo *philo, struct timeval t0);
+
+void		set_after_eat(t_philo *philo);
+
+void		take_fork(t_philo *philo);
 
 void		*creation(void *ptr);
 
@@ -101,4 +105,6 @@ void		ft_getnbr(char *itoa, unsigned int n, int counter);
 void		free_params(t_philo *philo);
 
 void		free_init(t_philo *philo, int c);
+
+int			ft_strncmp(const char *s1, const char *s2, size_t n);
 #endif

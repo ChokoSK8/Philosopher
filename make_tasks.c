@@ -6,11 +6,27 @@
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 17:31:16 by abrun             #+#    #+#             */
-/*   Updated: 2021/11/10 14:04:49 by abrun            ###   ########.fr       */
+/*   Updated: 2021/11/10 15:20:41 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+int	do_death(t_philo *philo, struct timeval t0)
+{
+	struct timeval	t1;
+
+	pthread_mutex_lock(&philo->g->end);
+	if (philo->g->dead || !philo->g->meal)
+	{
+		pthread_mutex_unlock(&philo->g->end);
+		return (0);
+	}
+	pthread_mutex_unlock(&philo->g->end);
+	gettimeofday(&t1, NULL);
+	philo->die.c -= ft_diff_time(t0, t1);
+	return (1);
+}
 
 void	do_eat(struct timeval t0, t_philo *philo)
 {
@@ -38,15 +54,6 @@ void	do_eat(struct timeval t0, t_philo *philo)
 	}
 }
 
-void	set_after_eat(t_philo *philo)
-{
-	philo->sleep.c = philo->sleep.t;
-	philo->sleep.b = 0;
-	pthread_mutex_lock(&philo->g->think);
-	philo->equip = 0;
-	pthread_mutex_unlock(&philo->g->think);
-}
-
 void	do_sleep(struct timeval t0, t_philo *philo)
 {
 	struct timeval	t1;
@@ -70,35 +77,17 @@ void	do_sleep(struct timeval t0, t_philo *philo)
 
 void	do_think(t_philo *philo)
 {
+	pthread_mutex_lock(&philo->g->think);
 	if (!philo->next->equip && !philo->prev->equip
 		&& (can_he_eats(philo->meal, philo->g)
 			|| philo->equip))
 	{
-		if (!philo->equip)
-		{
-			pthread_mutex_lock(&philo->g->var);
-			philo->g->all_m += 1;
-			pthread_mutex_unlock(&philo->g->var);
-			philo->meal += 1;
-		}
-		if (philo->equip != 1 && philo->equip != 3)
-		{
-			pthread_mutex_lock(&philo->fork);
-			philo->equip += 1;
-			print_msg(philo, "has taken a fork");
-			pthread_mutex_unlock(&philo->fork);
-		}
-		else if (philo->equip != 2 && philo->equip != 3)
-		{
-			pthread_mutex_lock(&philo->next->fork);
-			philo->equip += 2;
-			print_msg(philo, "has taken a fork");
-			pthread_mutex_unlock(&philo->next->fork);
-		}
+		take_fork(philo);
 	}
 	else if (!philo->think)
 	{
 		print_msg(philo, "is thinking");
 		philo->think = 1;
 	}
+	pthread_mutex_unlock(&philo->g->think);
 }
