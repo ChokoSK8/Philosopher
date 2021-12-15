@@ -6,7 +6,7 @@
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 17:31:39 by abrun             #+#    #+#             */
-/*   Updated: 2021/11/10 14:59:22 by abrun            ###   ########.fr       */
+/*   Updated: 2021/12/15 21:32:53 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,28 @@
 
 long int	ft_diff_time(struct timeval t0, struct timeval t1)
 {
-	long int	ret;
+	long int 	ret;
 
 	ret = (t1.tv_sec * 1000 + t1.tv_usec / 1000
 			- (t0.tv_sec * 1000 + t0.tv_usec / 1000));
 	return (ret);
+}
+
+int	ft_timer(long int timer, struct timeval t0, t_philo *phi)
+{
+	struct timeval	t1;
+
+	gettimeofday(&t1, NULL);
+	while (ft_diff_time(t0, t1) < timer)
+	{
+		gettimeofday(&t1, NULL);
+		if (ft_diff_time(phi->eat.last, t1) >= phi->die.t)
+		{
+			phi->die.c = 0;
+			return (0);
+		}
+	}
+	return (1);
 }
 
 void	print_msg(t_philo *philo, char *msg)

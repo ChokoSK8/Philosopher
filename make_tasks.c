@@ -6,13 +6,13 @@
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 17:31:16 by abrun             #+#    #+#             */
-/*   Updated: 2021/11/10 15:31:22 by abrun            ###   ########.fr       */
+/*   Updated: 2021/12/15 21:48:45 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	do_death(t_philo *philo, struct timeval t0)
+int	do_death(t_philo *philo)
 {
 	struct timeval	t1;
 
@@ -24,70 +24,62 @@ int	do_death(t_philo *philo, struct timeval t0)
 	}
 	pthread_mutex_unlock(&philo->g->end);
 	gettimeofday(&t1, NULL);
-	philo->die.c -= ft_diff_time(t0, t1);
+	if (ft_diff_time(philo->eat.last, t1) >= philo->die.t)
+		philo->die.c = 0;
 	return (1);
 }
 
-void	do_eat(struct timeval t0, t_philo *philo)
+void	do_eat(t_philo *philo)
 {
-	struct timeval	t1;
-
-	if (!philo->eat.b)
-	{
-		philo->die.c = philo->die.t;
-		philo->think = 0;
-		print_msg(philo, "is eating");
-		philo->eat.b = 1;
-	}
-	else
-	{
-		gettimeofday(&t1, NULL);
-		philo->eat.c -= ft_diff_time(t0, t1);
-	}
-	if (philo->eat.c <= 0)
-	{
-		set_after_eat(philo);
-		pthread_mutex_lock(&philo->g->end);
-		if (philo->meal == philo->g->n_meal && philo->g->meal)
-			philo->g->meal--;
-		pthread_mutex_unlock(&philo->g->end);
-	}
+	philo->die.c = philo->die.t - philo->eat.t;
+	print_msg(philo, "is eating");
+	philo->eat.b = 1;
+	gettimeofday(&philo->eat.last, NULL);
+	if (!ft_timer(philo->eat.t, philo->eat.last, philo))
+		philo->die.c = 0;
+	set_after_eat(philo);
+	pthread_mutex_lock(&philo->g->end);
+	if (philo->meal == philo->g->n_meal && philo->g->meal)
+		philo->g->meal--;
+	pthread_mutex_unlock(&philo->g->end);
 }
 
-void	do_sleep(struct timeval t0, t_philo *philo)
+void	do_sleep(t_philo *philo)
 {
 	struct timeval	t1;
 
-	if (!philo->sleep.b)
-	{
-		print_msg(philo, "is_sleeping");
-		philo->sleep.b = 1;
-	}
-	else
-	{
-		gettimeofday(&t1, NULL);
-		philo->sleep.c -= ft_diff_time(t0, t1);
-	}
-	if (philo->sleep.c <= 0)
-	{
-		philo->eat.c = philo->eat.t;
-		philo->eat.b = 0;
-	}
+	print_msg(philo, "is_sleeping");
+	philo->sleep.b = 0;
+	gettimeofday(&t1, NULL);
+	if (!ft_timer(philo->sleep.t, t1, philo))
+		philo->die.c = 0;
+	philo->eat.c = philo->eat.t;
+	philo->eat.b = 0;
 }
 
 void	do_think(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->g->think);
-	if (!philo->next->equip && !philo->prev->equip
-		&& (can_he_eats(philo->meal, philo->g)
-			|| philo->equip))
-	{
-		take_fork(philo);
-	}
-	else if (!philo->think)
-	{
+	struct timeval	t;
+
+	if (philo->think)
 		print_msg(philo, "is thinking");
-		philo->think = 1;
+	philo->think = 1;
+	while (philo->equip != 3)
+	{
+		pthread_mutex_lock(&philo->g->think);
+		if (!philo->next->equip && !philo->prev->equip
+			&& (can_he_eats(philo->meal, philo->g)
+				|| philo->equip))
+		{
+			take_fork(philo);
+		}
+		pthread_mutex_unlock(&philo->g->think);
+		usleep(50);
+		gettimeofday(&t, NULL);
+		if (ft_diff_time(philo->eat.last, t) >= philo->die.t)
+		{
+			philo->die.c = 0;
+			return;
+		}
 	}
-	pthread_mutex_unlock(&philo->g->think);
 }

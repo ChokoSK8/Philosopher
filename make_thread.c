@@ -6,7 +6,7 @@
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 17:30:06 by abrun             #+#    #+#             */
-/*   Updated: 2021/11/10 15:16:13 by abrun            ###   ########.fr       */
+/*   Updated: 2021/12/15 21:57:25 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,21 +19,24 @@ void	*creation(void *ptr)
 	struct timeval	t1;
 
 	philo = (t_philo *)ptr;
-	philo->sleep.c = 0;
 	gettimeofday(&t0, NULL);
+	gettimeofday(&philo->eat.last, NULL);
+	print_msg(philo, "is thinking");
+	usleep(100);
+	if (philo->id % 2)
+		usleep(100);
+	philo->sleep.c = 0;
 	while (philo->die.c > 0)
 	{
 		gettimeofday(&t1, NULL);
-		if (!do_death(philo, t0))
+		if (!do_death(philo))
 			return (NULL);
-		if (philo->eat.c > 0 && philo->die.c > 0 && philo->equip == 3)
-			do_eat(t0, philo);
-		else if (philo->sleep.c > 0 && philo->die.c > 0)
-			do_sleep(t0, philo);
-		if (philo->sleep.c <= 0 && !philo->eat.b
-			&& philo->die.c > 0)
+		if (philo->die.c > 0 && philo->equip == 3)
+			do_eat(philo);
+		else if (philo->sleep.b && philo->die.c > 0)
+			do_sleep(philo);
+		if (!philo->sleep.b && philo->die.c > 0)
 			do_think(philo);
-		usleep(50);
 		t0 = t1;
 	}
 	return (exit_thread(philo));

@@ -6,7 +6,7 @@
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 11:47:16 by abrun             #+#    #+#             */
-/*   Updated: 2021/11/10 13:51:35 by abrun            ###   ########.fr       */
+/*   Updated: 2021/12/15 21:51:10 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ t_philo	fill_philo_parameters(char **av, int c, t_param *param)
 	philo.think = 0;
 	philo.equip = 0;
 	philo.meal = 0;
+	philo.id = c + 1;
 	num = ft_itoa(c + 1);
 	philo.name = ft_strjoin("philo", num);
 	free(num);

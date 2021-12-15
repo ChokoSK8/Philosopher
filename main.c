@@ -6,7 +6,7 @@
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 11:40:01 by abrun             #+#    #+#             */
-/*   Updated: 2021/11/09 08:53:40 by abrun            ###   ########.fr       */
+/*   Updated: 2021/12/15 21:57:23 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ int	main(int ac, char **av)
 	{
 		if (pthread_create(&philo[c].thread, NULL, creation, (void *)&philo[c]))
 			return (4);
-		usleep(300);
 	}
 	c = -1;
 	while (++c < n_ph)

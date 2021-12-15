@@ -6,7 +6,7 @@
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/10 15:16:53 by abrun             #+#    #+#             */
-/*   Updated: 2021/11/10 15:31:24 by abrun            ###   ########.fr       */
+/*   Updated: 2021/12/15 21:20:29 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	set_after_eat(t_philo *philo)
 {
 	philo->sleep.c = philo->sleep.t;
-	philo->sleep.b = 0;
+	philo->sleep.b = 1;
 	pthread_mutex_lock(&philo->g->think);
 	philo->equip = 0;
 	pthread_mutex_unlock(&philo->g->think);
