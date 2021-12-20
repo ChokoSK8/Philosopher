@@ -6,7 +6,7 @@
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 17:31:16 by abrun             #+#    #+#             */
-/*   Updated: 2021/12/15 21:48:45 by abrun            ###   ########.fr       */
+/*   Updated: 2021/12/20 19:44:15 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,17 @@ void	do_eat(t_philo *philo)
 	gettimeofday(&philo->eat.last, NULL);
 	if (!ft_timer(philo->eat.t, philo->eat.last, philo))
 		philo->die.c = 0;
+	pthread_mutex_lock(&philo->g->think);
+	*philo->equip = 0;
+	pthread_mutex_unlock(&philo->g->think);
 	set_after_eat(philo);
 	pthread_mutex_lock(&philo->g->end);
 	if (philo->meal == philo->g->n_meal && philo->g->meal)
+	{
 		philo->g->meal--;
+		if (!philo->g->meal)
+			philo->die.c = 0;
+	}
 	pthread_mutex_unlock(&philo->g->end);
 }
 
@@ -48,7 +55,10 @@ void	do_sleep(t_philo *philo)
 {
 	struct timeval	t1;
 
-	print_msg(philo, "is_sleeping");
+	pthread_mutex_lock(&philo->g->think);
+	*philo->equip = 0;
+	pthread_mutex_unlock(&philo->g->think);
+	print_msg(philo, "is sleeping");
 	philo->sleep.b = 0;
 	gettimeofday(&t1, NULL);
 	if (!ft_timer(philo->sleep.t, t1, philo))
@@ -64,22 +74,23 @@ void	do_think(t_philo *philo)
 	if (philo->think)
 		print_msg(philo, "is thinking");
 	philo->think = 1;
-	while (philo->equip != 3)
+	while (*philo->equip != 3)
 	{
+		timer(1);
 		pthread_mutex_lock(&philo->g->think);
-		if (!philo->next->equip && !philo->prev->equip
-			&& (can_he_eats(philo->meal, philo->g)
-				|| philo->equip))
+		if (!(*philo->next) && !(*philo->prev))
 		{
-			take_fork(philo);
+			if ((*philo->equip || can_he_eats(philo, philo->g)))
+			{
+				take_fork(philo);
+			}
 		}
 		pthread_mutex_unlock(&philo->g->think);
-		usleep(50);
 		gettimeofday(&t, NULL);
 		if (ft_diff_time(philo->eat.last, t) >= philo->die.t)
 		{
 			philo->die.c = 0;
-			return;
+			return ;
 		}
 	}
 }

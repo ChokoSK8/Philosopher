@@ -6,7 +6,7 @@
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 11:47:16 by abrun             #+#    #+#             */
-/*   Updated: 2021/12/15 21:51:10 by abrun            ###   ########.fr       */
+/*   Updated: 2021/12/20 19:58:25 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,29 @@ t_philo	fill_philo_parameters(char **av, int c, t_param *param)
 	t_philo	philo;
 	char	*num;
 
+	philo = fill_philo_2(av, philo);
+	philo.equip = malloc(sizeof(int));
+	if (philo.equip)
+	{
+		*philo.equip = 0;
+		philo.meal = 0;
+		philo.id = c + 1;
+		philo.ord = -1;
+		num = ft_itoa(c + 1);
+		if (!num)
+			free(philo.equip);
+		philo.name = ft_strjoin("philo", num);
+		free(num);
+		philo.g = param;
+		pthread_mutex_init(&philo.fork, NULL);
+	}
+	else
+		philo.name = 0;
+	return (philo);
+}
+
+t_philo	fill_philo_2(char **av, t_philo philo)
+{
 	philo.sleep.t = ft_atoi(av[4]);
 	philo.sleep.c = ft_atoi(av[4]);
 	philo.sleep.b = 0;
@@ -80,14 +103,6 @@ t_philo	fill_philo_parameters(char **av, int c, t_param *param)
 	philo.die.t = ft_atoi(av[2]);
 	philo.die.c = ft_atoi(av[2]);
 	philo.think = 0;
-	philo.equip = 0;
-	philo.meal = 0;
-	philo.id = c + 1;
-	num = ft_itoa(c + 1);
-	philo.name = ft_strjoin("philo", num);
-	free(num);
-	philo.g = param;
-	pthread_mutex_init(&philo.fork, NULL);
 	return (philo);
 }
 
@@ -96,18 +111,25 @@ t_philo	*assign_prev_next(t_philo *philo, int c, int n_ph)
 	if (n_ph > 1)
 	{
 		if (c < n_ph - 1)
-			philo[c].next = &philo[c + 1];
+		{
+			philo[c].next = philo[c + 1].equip;
+			philo[c].next_ph = &philo[c + 1];
+		}
 		else
-			philo[c].next = &philo[0];
+		{
+			philo[c].next = philo[0].equip;
+			philo[c].next_ph = &philo[0];
+		}
 		if (c != 0)
-			philo[c].prev = &philo[c - 1];
+			philo[c].prev = philo[c - 1].equip;
 		else
-			philo[c].prev = &philo[n_ph - 1];
+			philo[c].prev = philo[n_ph - 1].equip;
 	}
 	else
 	{
-		philo[c].prev = &philo[c];
-		philo[c].next = &philo[c];
+		philo[c].prev = philo[c].equip;
+		philo[c].next = philo[c].equip;
+		philo[c].next_ph = &philo[c];
 	}
 	return (philo);
 }

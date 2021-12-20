@@ -6,7 +6,7 @@
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 11:58:08 by abrun             #+#    #+#             */
-/*   Updated: 2021/12/15 21:50:06 by abrun            ###   ########.fr       */
+/*   Updated: 2021/12/20 19:59:02 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@
 
 typedef struct s_task
 {
-	long int	t;
-	long int	c;
-	int			b;
+	long int		t;
+	long int		c;
+	int				b;
 	struct timeval	last;
 }			t_task;
 
@@ -48,13 +48,15 @@ typedef struct s_philo
 	t_task			die;
 	t_task			eat;
 	char			*name;
-	struct s_philo	*next;
-	struct s_philo	*prev;
+	int				*prev;
+	int				*next;
 	pthread_mutex_t	fork;
+	struct s_philo	*next_ph;
 	int				think;
-	int				equip;
+	int				*equip;
 	int				meal;
 	int				id;
+	int				ord;
 	t_param			*g;
 }			t_philo;
 
@@ -63,6 +65,8 @@ t_philo		*init_philo(int n_ph, int ac, char **av);
 t_param		*init_param(int ac, char **av, int n_ph);
 
 t_philo		fill_philo_parameters(char **av, int c, t_param *param);
+
+t_philo		fill_philo_2(char **av, t_philo philo);
 
 t_philo		*assign_prev_next(t_philo *philo, int c, int n_ph);
 
@@ -78,7 +82,7 @@ long int	ft_diff_time(struct timeval t0, struct timeval t1);
 
 void		print_msg(t_philo *philo, char *msg);
 
-int			can_he_eats(int ph_meal, t_param *param);
+int			can_he_eats(t_philo *philo, t_param *param);
 
 void		do_eat(t_philo *philo);
 
@@ -110,5 +114,9 @@ void		free_init(t_philo *philo, int c);
 
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
 
-int		ft_timer(long int timer, struct timeval t0, t_philo *philo);
+int			ft_timer(long int timer, struct timeval t0, t_philo *philo);
+
+int			check_error(int ac, char **av);
+
+void		timer(long int timer);
 #endif

@@ -1,41 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   check_error.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abrun <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/03 11:40:01 by abrun             #+#    #+#             */
-/*   Updated: 2021/12/20 19:36:43 by abrun            ###   ########.fr       */
+/*   Created: 2021/12/20 19:29:30 by abrun             #+#    #+#             */
+/*   Updated: 2021/12/20 19:32:14 by abrun            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	main(int ac, char **av)
+int	check_error(int ac, char **av)
 {
-	t_philo			*philo;
-	int				n_ph;
-	int				c;
+	int	c;
 
-	if (check_error(ac, av))
+	if (ac < 5 || ac > 6)
 		return (1);
-	n_ph = ft_atoi(av[1]);
-	philo = init_philo(n_ph, ac, av);
-	if (!philo)
-		return (2);
-	c = -1;
-	while (++c < n_ph)
+	c = 1;
+	while (av[c])
 	{
-		if (pthread_create(&philo[c].thread, NULL, creation, (void *)&philo[c]))
-			return (4);
+		if (ft_atoi(av[c]) < 0)
+			return (1);
+		c++;
 	}
-	c = -1;
-	while (++c < n_ph)
-	{
-		if (pthread_join(philo[c].thread, NULL))
-			return (5);
-	}
-	free_params(philo);
 	return (0);
 }
